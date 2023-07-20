@@ -72,9 +72,9 @@ io.on("connection", (socket) => {
 
 })
 
-const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-    console.log(`server started on port ${PORT}`)
+const port = process.env.PORT || 3001;
+server.listen(port, () => {
+    console.log(`server started on port ${port}`)
 })
 
 
