@@ -39,7 +39,7 @@ let activeUsers = []
 
 io.on("connection", (socket) => {
  
-    console.log("user connected with socketId",socket.id);
+    
     socket.on("addNewUser", (userId) => {
           if(!activeUsers.some((user) => user.userId === userId)){
             activeUsers.push({
@@ -47,26 +47,26 @@ io.on("connection", (socket) => {
                 socketId: socket.id
             })
           }
-          console.log(activeUsers)
+
           io.emit('getUsers', activeUsers)
     })
 
     socket.on("sendMessage", ({data,recepient }) => {
-    //     // console.log(activeUsers)
-        console.log(data, recepient)
+
+ 
         const user = activeUsers.find((user) => user.userId === recepient)
        
-    //    if(user){
-    //     io.to(user.socketId).emit("receiveMessage", data)
-    //    }
+       if(user){
+        io.to(user.socketId).emit("receiveMessage", data)
+       }
 
-        socket.broadcast.emit("receiveMessage",data)
+        // socket.broadcast.emit("receiveMessage",data)
     })
 
     socket.on('disconnect', () => {
        
         activeUsers = activeUsers.filter(user => user.socketId !== socket.id)
-        console.log(activeUsers)
+     
         io.emit('getUsers', activeUsers)
     })
 
