@@ -1,6 +1,5 @@
 const User = require('../model/user')
 const bcrypt = require('bcrypt')
-const {cloudinary} = require('../config/cloudinary')
 const jwt = require('jsonwebtoken')
 
 exports.signUp = async (req,res) => {
@@ -20,19 +19,18 @@ exports.signUp = async (req,res) => {
         }
 
         if(password){
-            if(password.length < 6){
-               return res.status(400).json({message: "Password length must be at least 6 characters"})
+            if(password.length < 8){
+               return res.status(400).json({message: "Password length must be at least 8 characters"})
             }
         }
 
        
 
         if(avatar){
-            const result = await cloudinary.uploader.upload(avatar ,{folder: "chat-app"})
-
+           
              const hashPassword = await bcrypt.hash(password, 10)
             const user = await User.create({
-            username, email, password:hashPassword, avatar : {publicUrl : result.public_id, secureUrl: result.secure_url}
+            username, email, password:hashPassword, avatar 
             })
             const token = jwt.sign({email: user.email, id: user._id}, process.env.JWT_SECRET)
 

@@ -40,35 +40,38 @@ let activeUsers = []
 io.on("connection", (socket) => {
  
     
-    socket.on("addNewUser", (userId) => {
+    socket.on('join', (userId) => {
+
+        if(socket.room) {
+            socket.leave(socket.room)
+        }
+  
           if(!activeUsers.some((user) => user.userId === userId)){
             activeUsers.push({
                 userId,
                 socketId: socket.id
             })
           }
+      
+        io.emit('onlineUsers', activeUsers)
+        socket.join(`user_${userId}`)
+        socket.room = `user_${userId}`
 
-          io.emit('getUsers', activeUsers)
+
     })
 
-    socket.on("sendMessage", ({data,recepient }) => {
+    socket.on("sendMessage", ({data, recepient}) => {
+        socket.to(`user_${recepient}`).emit("receiveMessage", data)
 
- 
-        const user = activeUsers.find((user) => user.userId === recepient)
-       
-       if(user){
-        io.to(user.socketId).emit("receiveMessage", data)
-       }
-
-        // socket.broadcast.emit("receiveMessage",data)
     })
 
-    socket.on('disconnect', () => {
-       
+    socket.on("disconnect", () => {
+        
         activeUsers = activeUsers.filter(user => user.socketId !== socket.id)
-     
-        io.emit('getUsers', activeUsers)
+        
+        io.emit('onlineUsers', activeUsers)
     })
+
 
 })
 
