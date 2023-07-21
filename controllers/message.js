@@ -1,5 +1,4 @@
 const Message = require('../model/message')
-const {cloudinary} = require('../config/cloudinary')
 
 exports.createMessage = async (req,res) => {
     try {

@@ -1,7 +1,4 @@
 const { getMessage, createMessage } = require('../controllers/message')
-// const upload = require('../middleware/upload')
-const {cloudinary} = require('../config/cloudinary')
-const Message = require('../model/message')
 const {isAuthenticated} = require('../middleware/auth')
 const router = require('express').Router()
 
